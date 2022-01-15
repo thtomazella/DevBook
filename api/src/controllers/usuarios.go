@@ -140,7 +140,27 @@ func AtualizandoUsuario(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// DeletarUsuario exclui somente um registro do banco dados
+// DeletarUsuario excluir somente um registro do banco dados
 func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Deletando usuário"))
+	parametro := mux.Vars(r)
+	usuarioID, erro := strconv.ParseUint(parametro["usuarioId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+	}
+
+	bd, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer bd.Close()
+
+	repositorio := repositorios.NovoRepositoDeUsuarios(bd)
+	if erro = repositorio.Deletar(usuarioID); erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusNoContent, nil)
+
 }
