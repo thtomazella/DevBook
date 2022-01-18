@@ -49,7 +49,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if erro != nil {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 	}
-
+	
 	w.Write([]byte(token))
 
 }
