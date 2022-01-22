@@ -226,7 +226,9 @@ func SeguirUsuario(w http.ResponseWriter, r *http.Request) {
 
 // PararDeSeguirUsuario permite que um usuario pare de seguir outro
 func PararDeSeguirUsuario(w http.ResponseWriter, r *http.Request) {
+
 	seguidorID, erro := autenticacao.ExtrairUsuarioID(r)
+
 	if erro != nil {
 		respostas.Erro(w, http.StatusUnauthorized, erro)
 		return
@@ -257,5 +259,31 @@ func PararDeSeguirUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respostas.JSON(w, http.StatusNoContent, nil)
+
+}
+
+// BuscarSeguidores permite buscar todos os seguidores de um usuáro
+func BuscarSeguidores(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	usuarioID, erro := strconv.ParseUint(parametros["usuarioId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositoDeUsuarios(db)
+	seguidores, erro := repositorio.BuscarSeguidores(usuarioID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, seguidores)
 
 }
