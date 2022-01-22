@@ -22,7 +22,7 @@ var (
 // Carregar vai inicializar as variáveis de ambiente
 func Carregar() {
 	var erro error
-
+	// Função para carregar o arquivo .env
 	if erro = godotenv.Load(); erro != nil {
 		log.Fatal(erro)
 	}
@@ -37,5 +37,5 @@ func Carregar() {
 		os.Getenv("DB_SENHA"),
 		os.Getenv("DB_NOME"))
 
-		SecretKey = []byte(os.Getenv("SECRET_KEY"))
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
