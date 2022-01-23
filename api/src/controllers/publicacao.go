@@ -58,7 +58,30 @@ func CriarPublicacao(w http.ResponseWriter, r *http.Request) {
 }
 
 // BuscarPublicacoes  traz as publicacões que apareceriam no feed do usuarios
-func BuscarPublicacoes(w http.ResponseWriter, r *http.Request) {}
+func BuscarPublicacoes(w http.ResponseWriter, r *http.Request) {
+	usuarioID, erro := autenticacao.ExtrairUsuarioID(r)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositoDePublicacoes(db)
+	publicacoes, erro := repositorio.Buscar(usuarioID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, publicacoes)
+
+}
 
 // BuscarPublicacao traz uma única publicação
 func BuscarPublicacao(w http.ResponseWriter, r *http.Request) {

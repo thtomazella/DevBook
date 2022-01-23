@@ -37,7 +37,4 @@ CREATE TABLE publicacoes(
 
     curtidas int DEFAULT 0,
     criadoEm timestamp DEFAULT current_timestamp
-) ENGINE=INNODB;
-
-
-)
+) ENGINE=INNODB;)
