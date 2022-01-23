@@ -9,6 +9,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // CriarPublicacao adiciona uma nova publicacao no banco de dados
@@ -42,6 +45,7 @@ func CriarPublicacao(w http.ResponseWriter, r *http.Request) {
 		respostas.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
+	defer db.Close()
 
 	repositorio := repositorios.NovoRepositoDePublicacoes(db)
 	publicacao.ID, erro = repositorio.Criar(publicacao)
@@ -57,10 +61,36 @@ func CriarPublicacao(w http.ResponseWriter, r *http.Request) {
 func BuscarPublicacoes(w http.ResponseWriter, r *http.Request) {}
 
 // BuscarPublicacao traz uma única publicação
-func BuscarPublicacao(w http.ResponseWriter, r *http.Request) {}
+func BuscarPublicacao(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	publicacaoID, erro := strconv.ParseUint(parametros["publicacaoId"], 10, 64)
+	if erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositoDePublicacoes(db)
+	publicacao, erro := repositorio.BuscarPorID(publicacaoID)
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, publicacao)
+
+}
 
 // AtualizarPublicacao altera os dados de uma publicação
-func AtualizarPublicacao(w http.ResponseWriter, r *http.Request) {}
+func AtualizarPublicacao(w http.ResponseWriter, r *http.Request) {
+
+}
 
 // DeletarPublicacao exclui os dados de uma publicação
 func DeletarPublicacao(w http.ResponseWriter, r *http.Request) {}
