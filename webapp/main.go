@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"webapp/src/router"
 )
 
 func main() {
 	fmt.Println("Rodando WebApp!")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+
+	r := router.Gerar()
+	
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
