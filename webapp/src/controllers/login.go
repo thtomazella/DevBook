@@ -3,7 +3,9 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"webapp/src/config"
 	"webapp/src/modelos"
 	"webapp/src/respostas"
 )
@@ -20,7 +22,9 @@ func FazerLogin(w http.ResponseWriter, r *http.Request) {
 		respostas.JSON(w, http.StatusBadRequest, respostas.ErroApi{Erro: erro.Error()})
 	}
 
-	response, erro := http.Post("http://localhost:5000/login", "application/json", bytes.NewBuffer(usuario))
+	url := fmt.Sprintf("%s/login", config.APIURL)
+
+	response, erro := http.Post(url, "application/json", bytes.NewBuffer(usuario))
 	if erro != nil {
 		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroApi{Erro: erro.Error()})
 		return
