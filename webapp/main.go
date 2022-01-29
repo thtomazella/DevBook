@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"webapp/src/config"
+	"webapp/src/cookies"
 	"webapp/src/router"
 	"webapp/src/utils"
 )
@@ -12,8 +13,8 @@ import (
 func main() {
 
 	config.Carregar()
+	cookies.Configurar()
 	utils.CarregarTemplates()
-
 	r := router.Gerar()
 
 	fmt.Printf("Escutando na Porta %d\n", config.Porta)
