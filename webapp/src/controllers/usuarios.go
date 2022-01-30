@@ -31,8 +31,8 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		respostas.JSON(w, http.StatusInternalServerError, respostas.ErroApi{Erro: erro.Error()})
 		return
 	}
-
 	defer response.Body.Close()
+
 	if response.StatusCode >= 400 {
 		respostas.TratarStatusCodeDeErro(w, response)
 		return
