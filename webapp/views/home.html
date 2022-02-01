@@ -39,13 +39,19 @@
                 </fieldset>
             </div>
             <div class=" col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-                {{ range .}}
+                {{ range .Publicacoes }}
                 <div class="jumbotron">
                     <h1 class="display-4">{{ .Titulo }}</h1>
                     <p class="lead">{{ .Conteudo }}</p>
                     <a href="#">{{ .AutorNick }} - {{ .CriadaEm }} </a>
                     <hr class="my-4">
-                    <p>Botões</p>
+
+                    {{ if(eq .AutorID $.UsuarioID) }}
+                        <p>Botões curtir, editar e excluir</p>
+                    {{ else }}
+                        <p>Botão curtir</p>
+                    {{ end }}
+
                 </div>
                 {{ end }}
             </div>
